@@ -1,0 +1,19 @@
+{
+  "name": "content_scraper",
+  "version": "1.0.0",
+  "description": " A Node.js command line application that goes to an e-commerce site to get the latest prices and save them to a spreadsheet (CSV format).",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apalm112/Project6_Content_Scraper.git"
+  },
+  "author": "Captain Anonymous",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/apalm112/Project6_Content_Scraper/issues"
+  },
+  "homepage": "https://github.com/apalm112/Project6_Content_Scraper#readme"
+}
