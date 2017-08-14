@@ -11,5 +11,5 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(port, hostname, () => {
-	console.log(`Magic Server is running at http://localhost: ${port}`);
+	console.log(` Server is running at http://localhost: ${port}`);
 });

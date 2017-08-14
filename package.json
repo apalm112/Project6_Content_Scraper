@@ -4,6 +4,7 @@
   "description": "A CLI app that gets tshirt data from a website & saves the data to a csv file.",
   "main": "scraper.js",
   "scripts": {
+		"start": "node scraper.js getData.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

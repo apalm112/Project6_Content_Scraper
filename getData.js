@@ -2,7 +2,7 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const json2csv = require('json2csv');
-// fs is a Node.js package.
+// Node packages.
 const fs = require('fs');
 const http = require('http');
 
@@ -34,7 +34,6 @@ function loadArray(callback) {
 }
 /* WEB SCRAPER FUNCTION *********************************************/
 const scrape = http.get(mikeShirts, () => {
-	// TODO: SEE IF YOU CAN REMOVE REQUEST MODULE FROM SCRIPT
 	request(mikeShirts, function(error, response, html) {
 		if(!error) {
 			// Next teh Cheerio library will utilize on the returned html, giving jQuery functionality.
@@ -91,27 +90,32 @@ function writer(csv) {
 	loadArray(scrapeShirtPrice);
 })();
 
+// 4) TODO:
+function dataCheck() {
+/*	Program your scraper to check for a folder called ‘data’.
+	If the folder doesn’t exist, the scraper should create one.
+	If the folder does exist, the scraper should do nothing.   */
+
+/*	Scraping and Saving Data:
+	5) TODO:
+					The information should be stored in an CSV file that is named for the date it was created, e.g. 2016-11-21.csv.
+	6) TODO:
+		The CSV file should be saved inside the ‘data’ folder. If your program is run twice, it should overwrite the data in the CSV file with the updated information. */
+
+	fs.checkForFile();
+
+}
+
+
 module.exports.scrape = scrape;
 /*
 Project Instructions:
-2) TODO:
-	function dataCheck() {
-		Program your scraper to check for a folder called ‘data’.
-		If the folder doesn’t exist, the scraper should create one.
-		If the folder does exist, the scraper should do nothing.
-	}
 3) TODO: CHECK IF OK TO USE MORE THAN 2:
 			Choose and use two third-party npm packages.
 				1) One package should be used to scrape content from the site.
 					* https://www.npmjs.com/package/cheerio
 				2) The other package should create the CSV file.
 					*  https://www.npmjs.com/package/json2csv
-Scraping and Saving Data:
-5) TODO:
-				The information should be stored in an CSV file that is named for the date it was created, e.g. 2016-11-21.csv.
-6) TODO:
-	The CSV file should be saved inside the ‘data’ folder. If your program is run twice, it should overwrite the data in the CSV file with the updated information.
-
 7) TODO: If http://shirts4mike.com is down, an error message describing the issue should appear in the console.
 The error should be human-friendly, such as “There’s been a 404 error. Cannot connect to the to http://shirts4mike.com.”
 To test and make sure the error message displays as expected, you can disable the wifi on your computer or device.
@@ -120,8 +124,5 @@ Extra Credit
 *********************************************************************
 To get an "exceeds" rating, you can expand on the project in the following ways:
 *********************************************************************
- 2 steps
-1) TODO: Edit your package.json file so that your program runs when the npm start command is run.
-
 2) TODO: When an error occurs, log it to a file named scraper-error.log . It should append to the bottom of the file with a Time stamp and error e.g. [Tue Feb 16 2016 10:02:12 GMT-0800 (PST)] <error message>
 */
