@@ -88,26 +88,30 @@ function writer(csv) {
 /* PRICE ORDER: 18, 20, 20, 18, 25, 20, 20, 25 */
 (function() {
 	loadArray(scrapeShirtPrice);
+	dataCheck();
 })();
 
-// 4) TODO:
 function dataCheck() {
 /*	Program your scraper to check for a folder called ‘data’.
 	If the folder doesn’t exist, the scraper should create one.
 	If the folder does exist, the scraper should do nothing.   */
-
+	fs.readdir('data/', 'read', (error) => {
+		if (error) {
+			fs.mkdir('./data/', function() {
+				console.log('data/ created');
+			});
+		}
+	});
+}	// end dataCheck()
 /*	Scraping and Saving Data:
 	5) TODO:
 					The information should be stored in an CSV file that is named for the date it was created, e.g. 2016-11-21.csv.
 	6) TODO:
 		The CSV file should be saved inside the ‘data’ folder. If your program is run twice, it should overwrite the data in the CSV file with the updated information. */
 
-	fs.checkForFile();
-
-}
-
 
 module.exports.scrape = scrape;
+
 /*
 Project Instructions:
 3) TODO: CHECK IF OK TO USE MORE THAN 2:
