@@ -6,7 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Output.csv
-.csv
+*.csv
 
 # Runtime data
 pids
