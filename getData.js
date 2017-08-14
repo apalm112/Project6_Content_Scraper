@@ -80,9 +80,25 @@ function scrapeShirtPrice() {
 	Parameter 1 :  output.json - this is what the created filename will be called
 	Parameter 2 :  JSON.stringify(json, null, 4) - the data to write, here we do an extra step by calling JSON.stringify to make our JSON easier to read
 	Parameter 3 :  callback function - a callback function to let us know the status of our function*/
+
+function csvName() {
+	// TODO:
+				//	The information should be stored in an CSV file that is named for the date it was created, e.g. 2016-11-21.csv.
+	let now = new Date();
+	let year = now.getFullYear();
+	let month = now.getMonth();
+	let day = now.getDay();
+	let fileName = `${year}-${month}-${day}.csv`;
+	console.log(fileName);
+	return fileName;
+}
+
 function writer(csv) {
-	fs.writeFile('output.csv', csv, function() {
+	fs.writeFile(csvName(), csv, function() {
 		// console.log('File successfully written! --Check project directory for output.json file.');
+		/*	Scraping and Saving Data:
+			6) TODO:
+				The CSV file should be saved inside the ‘data’ folder. If your program is run twice, it should overwrite the data in the CSV file with the updated information. */
 	});
 }
 /* PRICE ORDER: 18, 20, 20, 18, 25, 20, 20, 25 */
@@ -103,12 +119,6 @@ function dataCheck() {
 		}
 	});
 }	// end dataCheck()
-/*	Scraping and Saving Data:
-	5) TODO:
-					The information should be stored in an CSV file that is named for the date it was created, e.g. 2016-11-21.csv.
-	6) TODO:
-		The CSV file should be saved inside the ‘data’ folder. If your program is run twice, it should overwrite the data in the CSV file with the updated information. */
-
 
 module.exports.scrape = scrape;
 
