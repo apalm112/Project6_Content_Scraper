@@ -27,24 +27,22 @@ function Shirt(Title, Price, ImageURL, URL, Time) {
 }
 
 function loadArray(callback) {
-	http.get(mikeShirts, () => {
-		request(mikeShirts, function(error, response, html) {
-			if (!error) {
-				let $ = cheerio.load(html);
-				$('.products').filter(function() {
-					let data = $(this).children().children();
-					for (let idx=0;idx<data.length;idx++) {
-						let URL = data[idx].attribs.href;
-						arr.push(URL);
-					}
-					if ( (arr.length) === 8) {
-						callback();
-					}
-				});
-			}
-		});
-	});
-}
+	request(mikeShirts, function(error, response, html) {
+		if (!error) {
+			let $ = cheerio.load(html);
+			$('.products').filter(function() {
+				let data = $(this).children().children();
+				for (let idx=0;idx<data.length;idx++) {
+					let URL = data[idx].attribs.href;
+					arr.push(URL);
+				}
+				if ( (arr.length) === 8) {
+					callback();
+				}
+			});	// end $products.filter()
+		}	// end IF loop
+	});	// end request()
+}	// end loadArray()
 /* WEB SCRAPER FUNCTION *********************************************/
 const scrape = http.get(mikeShirts, () => {
 	request(mikeShirts, function(error, response, html) {
@@ -135,9 +133,11 @@ Project Instructions:
 The error should be human-friendly, such as “There’s been a 404 error. Cannot connect to the to http://shirts4mike.com.”
 To test and make sure the error message displays as expected, you can disable the wifi on your computer or device.
 
-Extra Credit
+Extra Credits
 *********************************************************************
 To get an "exceeds" rating, you can expand on the project in the following ways:
 *********************************************************************
 2) TODO: When an error occurs, log it to a file named scraper-error.log . It should append to the bottom of the file with a Time stamp and error e.g. [Tue Feb 16 2016 10:02:12 GMT-0800 (PST)] <error message>
+		* create fs.writeFile function to write scraper-error.log file
+		* create function to append errors to the end of the file w/ a timestamp format of:  [Tue Feb 16 2016 13:00:55 GMT-0800 (PST)] <error message>
 */
