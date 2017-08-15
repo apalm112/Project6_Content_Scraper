@@ -102,7 +102,13 @@ function csvName() {
 	let year = now.getFullYear();
 	let month = now.getMonth() + 1;
 	let day = now.getDate();
-	let fileName = `data/${year}-${month}-${day}.csv`;
+
+
+	let fileDate = timestamp.format('Y-m-d');
+
+
+	// let fileName = `data/${year}-${month}-${day}.csv`;
+	let fileName = `data/${fileDate}.csv`;
 	return fileName;
 }
 
