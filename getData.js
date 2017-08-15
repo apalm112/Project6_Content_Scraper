@@ -98,16 +98,7 @@ function scrapeShirtPrice() {
 
 function csvName() {
 	// DONE	The information should be stored in an CSV file that is named for the date it was created, e.g. 2016-11-21.csv.	 DONE:The CSV file should be saved inside the ‘data’ folder. If your program is run twice, it should overwrite the data in the CSV file with the updated information.
-	let now = new Date();
-	let year = now.getFullYear();
-	let month = now.getMonth() + 1;
-	let day = now.getDate();
-
-
 	let fileDate = timestamp.format('Y-m-d');
-
-
-	// let fileName = `data/${year}-${month}-${day}.csv`;
 	let fileName = `data/${fileDate}.csv`;
 	return fileName;
 }
