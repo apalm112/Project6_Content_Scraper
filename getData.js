@@ -9,7 +9,17 @@ const http = require('http');
 /* GLOBAL VARIABLES **************************************************/
 let frog = 'shirts.php';
 let mikeShirts = `http://www.shirts4mike.com/${frog}`;
-let json = { Title: '', Price: '', ImageURL: '', URL: '', Time: '' };
+let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time'];
+let json = [];
+
+// Constructor for Shirts:
+function Shirt(Title, Price, ImageURL, URL) {
+	this.Title = Title;
+	this.Price = Price;
+	this.ImageURL = ImageURL;
+	this.URL = URL;
+}
+
 let csv;
 let arr = [];
 
@@ -48,10 +58,13 @@ const scrape = http.get(mikeShirts, () => {
 					let ImageURL = data[idx].children[0].attribs.src;
 					let URL = data[idx].attribs.href;
 					// once the data is extracted, save it to a json object
-					json.Title += Title;
-					json.ImageURL += ImageURL;
-					json.URL += URL;
+					// TODO: EACH SHIRT NEEDS TO BE ITS OWN OBJECT, THEN PUSHED INTO ONE ARRAY.
+					// json.Title += Title;
+					// json.ImageURL += ImageURL;
+					// json.URL += URL;
 					arr.push(URL);
+					let this_Shirt =  new Shirt(Title, '', ImageURL, URL);
+					json.push( this_Shirt );
 				}	// END FOR LOOP
 			});	// End products.filter()
 		}	// END IF Conditional
@@ -66,8 +79,14 @@ function scrapeShirtPrice() {
 				let $ = cheerio.load(html);
 				$('.shirt-details').filter(function() {
 					let Price = $(this).children().children()[0].children[0].data;
-					json.Price += Price.slice(1);
-					csv = json2csv({ data: json });
+					// json.Price += Price.slice(1);
+					json[idx].Price = Price;
+					try {
+						csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
+						console.log(csv);
+					} catch (error) {
+						console.error(error.message);
+					}
 				});
 				writer(csv);
 			});

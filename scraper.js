@@ -8,6 +8,9 @@ const server = http.createServer((request, response) => {
 	response.statusCode = 200;
 	response.setHeader('Content-Type', 'text/plain');
 	getData.scrape();
+	request.on('error', (error) => {
+		console.error(error.messge);
+	});
 });
 
 server.listen(port, hostname, () => {
