@@ -2,26 +2,29 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const json2csv = require('json2csv');
+const dateTime = require('node-datetime');
 // Node packages.
 const fs = require('fs');
 const http = require('http');
 
 /* GLOBAL VARIABLES **************************************************/
+let timestamp = dateTime.create();
+let formatted = timestamp.format('Y-n-d H:M:S');
 let frog = 'shirts.php';
 let mikeShirts = `http://www.shirts4mike.com/${frog}`;
-let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time'];
+let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time:', formatted];
 let json = [];
+let csv;
+let arr = [];
 
 // Constructor for Shirts:
-function Shirt(Title, Price, ImageURL, URL) {
+function Shirt(Title, Price, ImageURL, URL, Time) {
 	this.Title = Title;
 	this.Price = Price;
 	this.ImageURL = ImageURL;
 	this.URL = URL;
+	this.Time = Time;
 }
-
-let csv;
-let arr = [];
 
 function loadArray(callback) {
 	http.get(mikeShirts, () => {
@@ -57,11 +60,6 @@ const scrape = http.get(mikeShirts, () => {
 					let Title = data[idx].children[0].attribs.alt;
 					let ImageURL = data[idx].children[0].attribs.src;
 					let URL = data[idx].attribs.href;
-					// once the data is extracted, save it to a json object
-					// TODO: EACH SHIRT NEEDS TO BE ITS OWN OBJECT, THEN PUSHED INTO ONE ARRAY.
-					// json.Title += Title;
-					// json.ImageURL += ImageURL;
-					// json.URL += URL;
 					arr.push(URL);
 					let this_Shirt =  new Shirt(Title, '', ImageURL, URL);
 					json.push( this_Shirt );
@@ -79,11 +77,9 @@ function scrapeShirtPrice() {
 				let $ = cheerio.load(html);
 				$('.shirt-details').filter(function() {
 					let Price = $(this).children().children()[0].children[0].data;
-					// json.Price += Price.slice(1);
 					json[idx].Price = Price;
 					try {
 						csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
-						console.log(csv);
 					} catch (error) {
 						console.error(error.message);
 					}
@@ -107,8 +103,6 @@ function csvName() {
 	let month = now.getMonth() + 1;
 	let day = now.getDate();
 	let fileName = `data/${year}-${month}-${day}.csv`;
-	console.log(fileName);
-	console.log(Date());
 	return fileName;
 }
 
@@ -140,12 +134,6 @@ module.exports.scrape = scrape;
 
 /*
 Project Instructions:
-3) TODO: CHECK IF OK TO USE MORE THAN 2:
-			Choose and use two third-party npm packages.
-				1) One package should be used to scrape content from the site.
-					* https://www.npmjs.com/package/cheerio
-				2) The other package should create the CSV file.
-					*  https://www.npmjs.com/package/json2csv
 7) TODO: If http://shirts4mike.com is down, an error message describing the issue should appear in the console.
 The error should be human-friendly, such as “There’s been a 404 error. Cannot connect to the to http://shirts4mike.com.”
 To test and make sure the error message displays as expected, you can disable the wifi on your computer or device.
