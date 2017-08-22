@@ -2,14 +2,12 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const json2csv = require('json2csv');
-const dateTime = require('node-datetime');
 const moment = require('moment-timezone');
 // Node packages.
 const fs = require('fs');
 
 /* GLOBAL VARIABLES **************************************************/
-let timestamp = dateTime.create();
-let formatted = timestamp.format('Y-n-d H:M:S');
+let formatted = moment().format('Y-MMM-D HH:mm:ss');
 let frog = 'shirts.php';
 let mikeShirts = `http://shirts4mike.com/${frog}`;
 let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time:', formatted];
@@ -29,6 +27,9 @@ const printError = () => {
 	console.error(message);
 	errorWriter(message);
 };
+
+	console.log(  );
+ // 2017-Aug-21 23:59:50
 
 /* WEB SCRAPER FUNCTION *********************************************/
 const scrape = (callback) => {
@@ -86,7 +87,7 @@ function scrapeShirtPrice() {
 
 function csvName() {
 	// DONE	The information should be stored in an CSV file that is named for the date it was created, e.g. 2016-11-21.csv.	 DONE:The CSV file should be saved inside the ‘data’ folder. If your program is run twice, it should overwrite the data in the CSV file with the updated information.
-	let fileDate = timestamp.format('Y-m-d');
+	let fileDate = moment().format('Y-MM-D');
 	let fileName = `data/${fileDate}.csv`;
 	return fileName;
 }
