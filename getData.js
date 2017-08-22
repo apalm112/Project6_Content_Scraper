@@ -65,7 +65,7 @@
 		// Function iterates through the array of shirt links & scrapes the shirt price for each page.
 		let csv = '';
 		// TODO: REPLACE for LOOP W/ .forEach() OR SIMILIAR
-		for ( let idx=0; idx<arr.length; idx++ ) {
+		json.forEach(function( curr, idx ) {
 			let shirt = arr[idx];
 			request(`http://shirts4mike.com/${shirt}`, (error, response, html) => {
 				if (error) {
@@ -80,7 +80,7 @@
 				csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
 				writer(csv);
 			});	// end request()
-		}	// end FOR LOOP
+		});	// end json.forEach();
 	};	// end scrapeShirtPrice()
 
 	const extractPrice = ( amount, idx ) => {
