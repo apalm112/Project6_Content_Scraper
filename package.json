@@ -4,6 +4,7 @@
   "description": "A CLI app that gets tshirt data from a website & saves the data to a csv file.",
   "main": "scraper.js",
   "scripts": {
+    "start": "node scraper.js getData.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,8 +18,9 @@
   },
   "homepage": "https://github.com/apalm112/Project6_Content_Scraper#readme",
   "dependencies": {
-		"require": "^2.4.20",
     "cheerio": "^1.0.0-rc.2",
-    "json2csv": "^3.11.1"
+    "json2csv": "^3.11.1",
+    "node-datetime": "^2.0.0",
+    "require": "^2.4.20"
   }
 }
