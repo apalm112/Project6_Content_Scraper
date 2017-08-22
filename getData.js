@@ -70,8 +70,8 @@ function scrapeShirtPrice() {
 					let Price = $(this)[0].children[0].data;
 					json[idx].Price = Price;
 				}); // end filter()
-				// TODO: FIX 	writer(csv) being callled multiple times
 			}	// end if...else
+			// TODO: FIX 	writer(csv) being callled multiple times
 			csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
 			writer(csv);
 		});	// end request()
