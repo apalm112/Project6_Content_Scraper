@@ -42,17 +42,21 @@
 				let $ = cheerio.load(body);
 				// Use the unique class as a starting point & store the data filtered into a variable to see what's going on.
 				let $data = $('.products').children().children();
-				arr = $data.map( (curr, idx) => {
-					// Define the variables that get captured.
-					let Title = idx.children[0].attribs.alt;
-					let ImageURL = idx.children[0].attribs.src;
-					let URL = idx.attribs.href;
-					let this_Shirt =  new Shirt(Title, '', ImageURL, URL);
-					json.push( this_Shirt );
-					return URL;
-				});
+				extractData($data);
 				callback();
 			}
+		});
+	};
+
+	const extractData = ( datas ) => {
+		arr = datas.map( (curr, idx) => {
+			// Define the variables that get captured.
+			let Title = idx.children[0].attribs.alt;
+			let ImageURL = idx.children[0].attribs.src;
+			let URL = idx.attribs.href;
+			let this_Shirt =  new Shirt(Title, '', ImageURL, URL);
+			json.push( this_Shirt );
+			return URL;
 		});
 	};
 
@@ -69,10 +73,8 @@
 					return;
 				} else {
 					let $ = cheerio.load(html);
-					$('.price').filter(function() {
-						let Price = $(this)[0].children[0].data;
-						json[idx].Price = Price;
-					}); // end filter()
+					let $price = $('.price');
+					extractPrice( $price, idx);
 				}	// end if...else
 				// TODO: FIX writer(csv) being callled multiple times
 				csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
@@ -80,6 +82,14 @@
 			});	// end request()
 		}	// end FOR LOOP
 	};	// end scrapeShirtPrice()
+
+	const extractPrice = ( amount, idx ) => {
+		amount.filter(function() {
+			let Price = amount[0].children[0].data;
+			json[idx].Price = Price;
+			return json;
+		});
+	};
 
 	const csvName = () => {
 		// Function creates the CSV file name to be the current date.
