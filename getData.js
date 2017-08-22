@@ -1,121 +1,129 @@
-// NPM Packages	******************************************************/
-const request = require('request');
-const cheerio = require('cheerio');
-const json2csv = require('json2csv');
-const dateTime = require('node-datetime');
-const moment = require('moment-timezone');
-// Node packages.
-const fs = require('fs');
+'use stict';
+( (module) => {
+	// NPM Packages	******************************************************/
+	const request = require('request');
+	const cheerio = require('cheerio');
+	const json2csv = require('json2csv');
+	const moment = require('moment-timezone');
+	// Node packages.
+	const fs = require('fs');
+	/* GLOBAL VARIABLES **************************************************/
+	let formatted = moment().format('Y-MMM-D HH:mm:ss');
+	let frog = 'shirts.php';
+	let mikeShirts = `http://shirts4mike.com/${frog}`;
+	let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time:  ' + formatted];
+	let json = [];
+	let arr = [];
 
-/* GLOBAL VARIABLES **************************************************/
-let timestamp = dateTime.create();
-let formatted = timestamp.format('Y-n-d H:M:S');
-let frog = 'shirts.php';
-let mikeShirts = `http://shirts4mike.com/${frog}`;
-let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time:', formatted];
-let json = [];
-let arr = [];
+	// Constructor for Shirts:
+	function Shirt(Title, Price, ImageURL, URL) {
+		this.Title = Title;
+		this.Price = Price;
+		this.ImageURL = ImageURL;
+		this.URL = URL;
+	}
 
-// Constructor for Shirts:
-function Shirt(Title, Price, ImageURL, URL) {
-	this.Title = Title;
-	this.Price = Price;
-	this.ImageURL = ImageURL;
-	this.URL = URL;
-}
+	const printError = () => {
+		// Function shows the user an error if the webpage cannot be reached, also prints the error to a error log file.
+		const message = `There’s been a 404 error. Cannot connect to the page ${mikeShirts}`;
+		console.error(message);
+		errorWriter(message);
+	};
 
-const printError = () => {
-	const message = `There’s been a 404 error. Cannot connect to the page ${mikeShirts}`;
-	console.error(message);
-	errorWriter(message);
-};
-
-/* WEB SCRAPER FUNCTION *********************************************/
-const scrape = (callback) => {
-	request(mikeShirts, (error, response, body) => {
-		if (error) {
-			printError();
-			return;
-		} else {
-			// Next the Cheerio library will utilize on the returned html, giving jQuery functionality.
-			let $ = cheerio.load(body);
-			// Use the unique class as a starting point & store the data filtered into a variable so we can easily see what's going on.
-			let $data = $('.products').children().children();
-			arr = $data.map(function( curr, idx ) {
-				// Then define the variables that get captured.
-				let Title = idx.children[0].attribs.alt;
-				let ImageURL = idx.children[0].attribs.src;
-				let URL = idx.attribs.href;
-				let this_Shirt =  new Shirt(Title, '', ImageURL, URL);
-				json.push( this_Shirt );
-				return URL;
-			});	// end $data.map()
-			callback();
-		}	// end if...else
-	});	// end request()
-};	// end scrape()
-
-/* PRICE SCRAPER FUNCTION *********************************************/
-function scrapeShirtPrice() {
-	let csv = '';
-	for ( let idx=0; idx<arr.length; idx++ ) {
-		let shirt = arr[idx];
-		request(`http://shirts4mike.com/${shirt}`, function(error, response, html) {
+	/* WEB SCRAPER FUNCTION *********************************************/
+	const scrape = (callback) => {
+		// Function scrapes the webpage for corresponding shirt data, saves each shirt as an object stored in an array.
+		request(mikeShirts, (error, response, body) => {
 			if (error) {
 				printError();
 				return;
 			} else {
-				let $ = cheerio.load(html);
-				$('.price').filter(function() {
-					let Price = $(this)[0].children[0].data;
-					json[idx].Price = Price;
-				}); // end filter()
-			}	// end if...else
-			// TODO: FIX 	writer(csv) being callled multiple times
-			csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
-			writer(csv);
-		});	// end request()
-	}	// end FOR LOOP
-}	// end scrapeShirtPrice()
-/* CSV FILE FUNCTION ******************************************************/
-	/*	To write to the system we will use the built in 'fs' library.
-	In this example we will pass 3 parameters to the writeFile function
-	Parameter 1 :  output.json - this is what the created filename will be called
-	Parameter 2 :  JSON.stringify(json, null, 4) - the data to write, here we do an extra step by calling JSON.stringify to make our JSON easier to read
-	Parameter 3 :  callback function - a callback function to let us know the status of our function*/
+				// Next the Cheerio library will utilize on the returned html, giving jQuery functionality.
+				let $ = cheerio.load(body);
+				// Use the unique class as a starting point & store the data filtered into a variable to see what's going on.
+				let $data = $('.products').children().children();
+				extractData($data);
+				callback();
+			}
+		});
+	};
 
-function csvName() {
-	// DONE	The information should be stored in an CSV file that is named for the date it was created, e.g. 2016-11-21.csv.	 DONE:The CSV file should be saved inside the ‘data’ folder. If your program is run twice, it should overwrite the data in the CSV file with the updated information.
-	let fileDate = timestamp.format('Y-m-d');
-	let fileName = `data/${fileDate}.csv`;
-	return fileName;
-}
+	const extractData = ( datas ) => {
+		arr = datas.map( (curr, idx) => {
+			// Define the variables that get captured.
+			let Title = idx.children[0].attribs.alt;
+			let ImageURL = idx.children[0].attribs.src;
+			let URL = idx.attribs.href;
+			let this_Shirt =  new Shirt(Title, '', ImageURL, URL);
+			json.push( this_Shirt );
+			return URL;
+		});
+	};
 
-function errorWriter( mssg ) {
-	let fileName = 'scraper-error.log';
-	let errDate = moment().toString();
-	let errorTZ = moment().tz('America/Vancouver').format('(z)');
-	let errorLog = `\n${mssg} \n[${errDate} ${errorTZ}] <error message>`;
-	fs.appendFile(fileName, errorLog, function(){
-	});
-}
-function dataCheck() {
-	/*	Program your scraper to check for a folder called ‘data’.
-	If the folder doesn’t exist, the scraper should create one.
-	If the folder does exist, the scraper should do nothing.   */
-	fs.readdir('data/', 'read', (error) => {
-		if (error) {
-			fs.mkdir('./data/', function() {
-			});
-		}
-	});
-}	// end dataCheck()
-function writer(csv) {
-	fs.writeFile(csvName(), csv, function() {
-		console.log('File successfully written! --Check project directory for output.json file.');
-	});
-}
-/* PRICE ORDER: 18, 20, 20, 18, 25, 20, 20, 25 */
+	/* PRICE SCRAPER FUNCTION *********************************************/
+	const scrapeShirtPrice = () => {
+		// Function iterates through the array of shirt links & scrapes the shirt price for each page.
+		let csv = '';
+		// TODO: REPLACE for LOOP W/ .forEach() OR SIMILIAR
+		for ( let idx=0; idx<arr.length; idx++ ) {
+			let shirt = arr[idx];
+			request(`http://shirts4mike.com/${shirt}`, (error, response, html) => {
+				if (error) {
+					printError();
+					return;
+				} else {
+					let $ = cheerio.load(html);
+					let $price = $('.price');
+					extractPrice( $price, idx);
+				}	// end if...else
+				// TODO: FIX writer(csv) being callled multiple times
+				csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
+				writer(csv);
+			});	// end request()
+		}	// end FOR LOOP
+	};	// end scrapeShirtPrice()
 
-module.exports.dataCheck = dataCheck(scrape);
-module.exports.scrape = scrape(scrapeShirtPrice);
+	const extractPrice = ( amount, idx ) => {
+		amount.filter(function() {
+			let Price = amount[0].children[0].data;
+			json[idx].Price = Price;
+			return json;
+		});
+	};
+
+	const csvName = () => {
+		// Function creates the CSV file name to be the current date.
+		let fileDate = moment().format('Y-MM-D');
+		let fileName = `data/${fileDate}.csv`;
+		return fileName;
+	};
+
+	const errorWriter = ( mssg ) => {
+		// Function creates a file for error logs, if one doesn't already exist, appends the error message & the current date & time to the file.
+		let fileName = 'scraper-error.log';
+		let errDate = moment().toString();
+		let errorTZ = moment().tz('America/Vancouver').format('(z)');
+		let errorLog = `\n${mssg} \n[${errDate} ${errorTZ}] <error message>`;
+		fs.appendFile(fileName, errorLog, () => {
+		});
+	};
+	const dataCheck = () => {
+		// Function checks for a folder called ‘data’.  If the folder doesn’t exist, it creates one, if the folder does exist, it does nothing.
+		fs.readdir('data/', 'read', (error) => {
+			if (error) {
+				fs.mkdir('./data/', () => {
+				});
+			}
+		});
+	};
+	const writer = (csv) => {
+		// Function creates a file with the current date if one doesn't already exist, writes the scraped data to the file.  It overwrites the data w/ updated information if the program is run more than once.
+		fs .writeFile(csvName(), csv, () => {
+			console.log('File successfully written! --Check project directory for output.json file.');
+		});
+	};
+
+	module.exports.dataCheck = dataCheck(scrape);
+	module.exports.scrape = scrape(scrapeShirtPrice);
+
+})(module);
