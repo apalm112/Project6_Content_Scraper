@@ -6,7 +6,6 @@ const json2csv = require('json2csv');
 const moment = require('moment-timezone');
 // Node packages.
 const fs = require('fs');
-
 /* GLOBAL VARIABLES **************************************************/
 let formatted = moment().format('Y-MMM-D HH:mm:ss');
 let frog = 'shirts.php';
@@ -60,6 +59,7 @@ const scrape = (callback) => {
 const scrapeShirtPrice = () => {
 	// Function iterates through the array of shirt links & scrapes the shirt price for each page.
 	let csv = '';
+	// TODO: REPLACE for LOOP W/ .forEach() OR SIMILIAR
 	for ( let idx=0; idx<arr.length; idx++ ) {
 		let shirt = arr[idx];
 		request(`http://shirts4mike.com/${shirt}`, (error, response, html) => {
@@ -88,7 +88,7 @@ const csvName = () => {
 };
 
 const errorWriter = ( mssg ) => {
-	// Function creates a file for error logs, if one doesn't already exist, appends the error message & the current date & time to each log.
+	// Function creates a file for error logs, if one doesn't already exist, appends the error message & the current date & time to the file.
 	let fileName = 'scraper-error.log';
 	let errDate = moment().toString();
 	let errorTZ = moment().tz('America/Vancouver').format('(z)');
