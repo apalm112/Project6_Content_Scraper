@@ -1,4 +1,3 @@
-'use stict';
 ( (module) => {
 	// NPM Packages	******************************************************/
 	const request = require('request');
@@ -49,6 +48,7 @@
 	};
 
 	const extractData = ( datas ) => {
+		// Retrieves data for each shirt & stores that to its corresponding object in an array.
 		arr = datas.map( (curr, idx) => {
 			// Define the variables that get captured.
 			let Title = idx.children[0].attribs.alt;
@@ -63,8 +63,6 @@
 	/* PRICE SCRAPER FUNCTION *********************************************/
 	const scrapeShirtPrice = () => {
 		// Function iterates through the array of shirt links & scrapes the shirt price for each page.
-		let csv = '';
-		// TODO: REPLACE for LOOP W/ .forEach() OR SIMILIAR
 		json.forEach(function( curr, idx ) {
 			let shirt = arr[idx];
 			request(`http://shirts4mike.com/${shirt}`, (error, response, html) => {
@@ -75,19 +73,17 @@
 					let $ = cheerio.load(html);
 					let $price = $('.price');
 					extractPrice( $price, idx);
-				}	// end if...else
-				// TODO: FIX writer(csv) being callled multiple times
-				csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
-				writer(csv);
-			});	// end request()
-		});	// end json.forEach();
-	};	// end scrapeShirtPrice()
+				}
+			});
+		});
+		setTimeout(writer, 1000);
+	};
 
 	const extractPrice = ( amount, idx ) => {
+		// Filter the element w/ class="price" to get each shirt price, set that value in the corresponding objects index.
 		amount.filter(function() {
 			let Price = amount[0].children[0].data;
 			json[idx].Price = Price;
-			return json;
 		});
 	};
 
@@ -116,8 +112,9 @@
 			}
 		});
 	};
-	const writer = (csv) => {
+	const writer = () => {
 		// Function creates a file with the current date if one doesn't already exist, writes the scraped data to the file.  It overwrites the data w/ updated information if the program is run more than once.
+		let csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
 		fs .writeFile(csvName(), csv, () => {
 			console.log('File successfully written! --Check project directory for output.json file.');
 		});
