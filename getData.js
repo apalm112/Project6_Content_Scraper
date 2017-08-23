@@ -51,7 +51,9 @@
 		// Retrieves data for each shirt & stores that to its corresponding object in an array.
 		arr = datas.map( (curr, idx) => {
 			// Define the variables that get captured.
+			// TODO: REMOVE THE COMMA FROM TITLE.
 			let Title = idx.children[0].attribs.alt;
+			Title = Title.replace(',', '');
 			let ImageURL = idx.children[0].attribs.src;
 			let URL = idx.attribs.href;
 			let this_Shirt =  new Shirt(Title, '', ImageURL, URL);
@@ -99,7 +101,7 @@
 		let fileName = 'scraper-error.log';
 		let errDate = moment().toString();
 		let errorTZ = moment().tz('America/Vancouver').format('(z)');
-		let errorLog = `\n${mssg} \n[${errDate} ${errorTZ}] <error message>`;
+		let errorLog = `\n[${errDate} ${errorTZ}] \n${mssg}`;
 		fs.appendFile(fileName, errorLog, () => {
 		});
 	};
