@@ -118,7 +118,7 @@
 		// Function creates a file with the current date if one doesn't already exist, writes the scraped data to the file.  It overwrites the data w/ updated information if the program is run more than once.
 		let csv = json2csv({ data: json, fields: fields, quotes: '', del: ', ' });
 		fs .writeFile(csvName(), csv, () => {
-			console.log('File successfully written! --Check project directory for output.json file.');
+			console.log('File successfully written! --Check data directory for output.json file.');
 		});
 	};
 
