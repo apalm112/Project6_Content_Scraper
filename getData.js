@@ -9,7 +9,7 @@
 	/* GLOBAL VARIABLES **************************************************/
 	let formatted = moment().format('Y-MMM-D HH:mm:ss');
 	let frog = 'shirts.php';
-	let mikeShirts = `http://shirts4mike.XScom/${frog}`;
+	let mikeShirts = `http://shirts4mike.com/${frog}`;
 	let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time:  ' + formatted];
 	let json = [];
 	let arr = [];
