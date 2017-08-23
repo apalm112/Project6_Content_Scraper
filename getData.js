@@ -9,7 +9,7 @@
 	/* GLOBAL VARIABLES **************************************************/
 	let formatted = moment().format('Y-MMM-D HH:mm:ss');
 	let frog = 'shirts.php';
-	let mikeShirts = `http://shirts4mike.com/${frog}`;
+	let mikeShirts = `http://shirts4mike.XScom/${frog}`;
 	let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time:  ' + formatted];
 	let json = [];
 	let arr = [];
@@ -98,7 +98,7 @@
 
 	const errorWriter = ( mssg ) => {
 		// Function creates a file for error logs, if one doesn't already exist, appends the error message & the current date & time to the file.
-		let fileName = 'scraper-error.log';
+		let fileName = 'data/scraper-error.log';
 		let errDate = moment().toString();
 		let errorTZ = moment().tz('America/Vancouver').format('(z)');
 		let errorLog = `\n[${errDate} ${errorTZ}] \n${mssg}`;
