@@ -68,7 +68,6 @@ const scrapeShirtPrice = () => {
 				printError();
 				return;
 			} else {
-				console.log(shirt);
 				let $ = cheerio.load(html);
 				let $price = $('.price');
 				extractPrice( $price, idx);
