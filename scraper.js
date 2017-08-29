@@ -8,7 +8,7 @@ const fs = require('fs');
 /* GLOBAL VARIABLES **************************************************/
 let $data = '';
 let formatted = moment().format('HH:mm:ss');
-let website = 'http://www.shirts4mike.com/';
+let website = 'http://shirts4mike.com/';
 let entryPoint = 'http://shirts4mike.com/shirts.php';
 let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time'];
 let json = [];
@@ -23,7 +23,7 @@ function Shirt(Title, Price, ImageURL, URL, Time) {
 }
 // Function shows the user an error if the webpage cannot be reached, also prints the error to a error log file.
 const printError = () => {
-	const message = 'There\’s been a 404 error. Cannot connect to the page http://shirts4mike.com';
+	const message = `There\’s been a 404 error. Cannot connect to the page ${website}`;
 	console.error(message);
 	errorWriter(message);
 };
