@@ -6,11 +6,8 @@ const moment = require('moment-timezone');
 // Node packages.
 const fs = require('fs');
 /* GLOBAL VARIABLES **************************************************/
-let $data = '';
 let formatted = moment().format('HH:mm:ss');
 let website = 'http://shirts4mike.com/';
-let entryPoint = 'http://shirts4mike.com/shirts.php';
-let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time'];
 let json = [];
 let arr = [];
 // Constructor for Shirts:
@@ -23,13 +20,15 @@ function Shirt(Title, Price, ImageURL, URL, Time) {
 }
 // Function shows the user an error if the webpage cannot be reached, also prints the error to a error log file.
 const printError = () => {
-	const message = `There\’s been a 404 error. Cannot connect to the page ${website}`;
+	const message = `There’s been a 404 error. Cannot connect to the page ${website}`;
 	console.error(message);
 	errorWriter(message);
 };
 /* WEB SCRAPER FUNCTION *********************************************/
 // Function scrapes the webpage for corresponding shirt data, saves each shirt as an object stored in an array.
 const scrape = () => {
+	let $data = '';
+	let entryPoint = 'http://shirts4mike.com/shirts.php';
 	request(entryPoint, (error, response, body) => {
 		if (error) {
 			printError();
@@ -114,6 +113,7 @@ const dataCheck = () => {
 
 // Function creates a file with the current date if one doesn't already exist, writes the scraped data to the file.  It overwrites the data w/ updated information if the program is run more than once.
 const writer = () => {
+	let fields = ['Title', 'Price', 'ImageURL', 'URL', 'Time'];
 	let csv = json2csv({ data: json, fields: fields, quotes: '"', del: ', ' });
 	fs .writeFile(csvName(), csv, () => {
 		console.log('File successfully written! --Check data directory for csv file.');
@@ -121,4 +121,4 @@ const writer = () => {
 };
 
 module.exports.dataCheck = dataCheck(scrape);
-module.exports.scrape = scrape(scrapeShirtPrice);
+module.exports.scrape = scrape();
