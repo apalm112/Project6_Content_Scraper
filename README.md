@@ -9,6 +9,9 @@ Then install the dependicies on the command line run:
 `npm install`
 
 The script can be run from the command line by either: 
+
 `node scraper.js`
+
+or
 
 `npm start`
