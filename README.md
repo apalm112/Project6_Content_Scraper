@@ -1,17 +1,22 @@
-Full Stack JavaScript Program
+# Full Stack JavaScript Program Project #6: Build a Content Scraper
 
-Project #6: Build a Content Scraper
+A Node.js command line application that goes to a mock e-commerce site to scrape T-Shirt prices & save them to a spreadsheet in CSV format.
 
-A Node.js command line application that goes to an e-commerce site to get the latest prices and save them to a spreadsheet in CSV format. It uses npm modules.
+## Installation
+Clone the GitHub repository & install the dependencies.
 
-To run the script, clone this repo.
-Then install the dependicies on the command line run:
-`npm install`
+```
+$ git clone git@github.com:apalm112/FJS-Node-Content-Scraper.git
 
-The script can be run from the command line by either: 
+$ cd FSJS-Node-Content-Scraper/
 
-`node scraper.js`
+$ npm install
+```
+
+* The script can be run from the command line by either: 
+
+`$ node scraper.js`
 
 or
 
-`npm start`
+`$ npm start`
